@@ -57,12 +57,15 @@ import { panelpages as panelpages2 } from '../data/panelpages';
 import { OrdainModule } from '@rollthecloudinc/ordain';
 import { DparamModule } from '@rollthecloudinc/dparam';
 import { DetourModule } from '@rollthecloudinc/detour';
+import { RegionalLineChartComponent } from './components/regional-line-chart/regional-line-chart';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 // import { FlexLayoutServerModule } from '@angular/flex-layout/server';
 // import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 const routes = [
   { path: 'auth-callback', component: AuthCallbackComponent },
+  { path: "daily", component: RegionalLineChartComponent },
   ...panelpages.map(([id, path]) =>  ({ matcher: createEditMatcher(new PanelPage({ id, layoutType: '', displayType: '', gridItems: [], panels: [], layoutSetting: undefined, rowSettings: [], path })), component: EditPanelPageComponent, data: { panelPageListItem: new PanelPage({ id, layoutType: '', displayType: '', gridItems: [], panels: [], layoutSetting: undefined, rowSettings: [], path }) } })),
   ...panelpages.map(([id, path]) =>  ({ matcher: createMatcher(new PanelPage({ id, layoutType: '', displayType: '', gridItems: [], panels: [], layoutSetting: undefined, rowSettings: [], path })), component: PanelPageRouterComponent, data: { panelPageListItem: new PanelPage({ id, layoutType: '', displayType: '', gridItems: [], panels: [], layoutSetting: undefined, rowSettings: [], path }) } })),
   { path: '**', component: CatchAllRouterComponent, canActivate: [ CatchAllGuard ] }
@@ -89,7 +92,7 @@ export function markedOptionsFactory(): MarkedOptions {
 }
 
 @NgModule({
-  declarations: [AppComponent ],
+  declarations: [AppComponent, RegionalLineChartComponent ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     CommonModule,
@@ -164,7 +167,8 @@ export function markedOptionsFactory(): MarkedOptions {
     PagesModule,
     OrdainModule,
     DparamModule,
-    DetourModule
+    DetourModule,
+    NgxChartsModule
   ],
   providers: [
     CatchAllGuard,
