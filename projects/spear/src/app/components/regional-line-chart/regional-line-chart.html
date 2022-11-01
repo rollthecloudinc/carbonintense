@@ -1,4 +1,7 @@
-<ngx-charts-line-chart
+<h1>Daily Global Energy Carbon Intensity</h1>
+<p>NOTE: Dips to 0 are gaps in data set where report data isn't available.</p>
+<div class="chart-container">
+  <ngx-charts-line-chart
   [view]="view"
   [scheme]="colorScheme"
   [legend]="legend"
@@ -9,9 +12,10 @@
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
   [timeline]="timeline"
-  [results]="multi"
+  [results]="regions$ | async"
   (select)="onSelect($event)"
   (activate)="onActivate($event)"
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-line-chart>
+</div>

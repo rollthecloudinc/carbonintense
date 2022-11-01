@@ -1,81 +1,16 @@
-import { Component } from "@angular/core";
-
-const multi = [
-  {
-    "name": "Germany",
-    "series": [
-      {
-        "name": "1990",
-        "value": 62000000
-      },
-      {
-        "name": "2010",
-        "value": 73000000
-      },
-      {
-        "name": "2011",
-        "value": 89400000
-      }
-    ]
-  },
-
-  {
-    "name": "USA",
-    "series": [
-      {
-        "name": "1990",
-        "value": 250000000
-      },
-      {
-        "name": "2010",
-        "value": 309000000
-      },
-      {
-        "name": "2011",
-        "value": 311000000
-      }
-    ]
-  },
-
-  {
-    "name": "France",
-    "series": [
-      {
-        "name": "1990",
-        "value": 58000000
-      },
-      {
-        "name": "2010",
-        "value": 50000020
-      },
-      {
-        "name": "2011",
-        "value": 58000000
-      }
-    ]
-  },
-  {
-    "name": "UK",
-    "series": [
-      {
-        "name": "1990",
-        "value": 57000000
-      },
-      {
-        "name": "2010",
-        "value": 62000000
-      }
-    ]
-  }
-];
-
-
+import { Component, OnInit } from "@angular/core";
+import { EntityCollectionService, EntityServices } from "@ngrx/data";
+import { Observable, tap } from "rxjs";
+import { RegionalLineChartRegion } from "../../models/regional-line-chart";
 @Component({
   selector: "rtc-ci-regional-grid-chart",
   styleUrls: [ "regional-line-chart.scss" ],
   templateUrl: "regional-line-chart.html"
 })
-export class RegionalLineChartComponent {
+export class RegionalLineChartComponent implements OnInit {
+
+  private regionsService: EntityCollectionService<RegionalLineChartRegion>;
+
   multi: any[];
   view = undefined;
 
@@ -95,8 +30,22 @@ export class RegionalLineChartComponent {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
-  constructor() {
-    Object.assign(this, { multi });
+  regions$: Observable<Array<RegionalLineChartRegion>>;
+
+  constructor(
+    es: EntityServices
+  ) {
+    this.regionsService = es.getEntityCollectionService('RegionalLineChartRegion');
+  }
+
+  ngOnInit() {
+    const startDate = { value: /*'2022-10-30'*/ `2022-10-31T00:00:00.000Z` };
+    const endDate = { value: /*'2022-10-30'*/ `2022-11-01T00:00:00.000Z` };
+    // NOTE: open search adaptor expects json value
+    const qs = `start_date=${JSON.stringify(startDate)}&end_date=${JSON.stringify(endDate)}`;
+    this.regions$ = this.regionsService.getWithQuery(qs).pipe(
+      tap(regions => console.log('region entities', regions))
+    );
   }
 
   onSelect(data): void {

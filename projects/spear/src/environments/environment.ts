@@ -59,13 +59,19 @@ export const environment = {
     redirectUri: 'http://localhost:4000/implicit/callback',
     clientId: '0oa33yn39XtrnvY774x6',
   },
-  cognitoSettings: {
+  /*cognitoSettings: {
     identityPoolId: 'us-east-1:6f5cdc41-35b0-41ca-9f6b-7eca11320942',
     region: 'us-east-1',
     userPoolId: 'us-east-1_z8PhK3D8V'
+  },*/
+  cognitoSettings: { // prod cognito for testing
+    identityPoolId: 'us-east-1:51af715f-31cf-4200-b43b-6c1ea1b62f5e',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_ObsPF5JdM'
   },
   panelsSettings: {
-    openSearchDomain: 'search-classifieds-ui-dev-eldczuhq3vesgpjnr3vie6cagq',
+    // openSearchDomain: 'search-classifieds-ui-dev-eldczuhq3vesgpjnr3vie6cagq',
+    openSearchDomain: 'search-classifieds-ui-prod-o5unofrr3c4qb3ykfrxebh2e4a', // prod has the data - best test environment
     s3Bucket: 'classifieds-ui-dev',
     objectsRootUrl: 'https://rollthecloudinc.github.io/carbonintense-objects'
   },
@@ -78,13 +84,13 @@ export const environment = {
     identityPoolId: '',
     region: ''
   },
-  clientSettings: {
+  /*clientSettings: {
     authority: 'https://sso.druidcloud.dev',
     client_id: '3lkidn79q4jq8nahkecsguleij',
     redirect_uri: 'http://localhost:4000/auth-callback',
     silent_redirect_uri: 'http://localhost:4000/silent-refresh.html',
     response_type: "code",
-    scope:"openid profile aws.cognito.signin.user.admin ads_api/ads_api taxonomy_api/taxonomy_api chat/chat media_api/media_api profiles_api/profiles_api", /*'ads_api media_api chat IdentityServerApi taxonomy_api api_gateway",*/
+    scope:"openid profile aws.cognito.signin.user.admin ads_api/ads_api taxonomy_api/taxonomy_api chat/chat media_api/media_api profiles_api/profiles_api",
     filterProtocolClaims: true,
     loadUserInfo: true,
     automaticSilentRenew: true,
@@ -97,6 +103,29 @@ export const environment = {
       end_session_endpoint: "https://sso.druidcloud.dev/logout",
       token_endpoint: "https://sso.druidcloud.dev/oauth2/token",
       jwks_uri: "https://sso.druidcloud.dev/us-east-1_z8PhK3D8V"
+    },
+    signingKeys: signingKeys.keys
+  }*/
+  // prod is the only way to easily test with real data
+  clientSettings: {
+    authority: 'https://sso.druidcloud.io',
+    client_id: '37lke0kuqac07fs1mk9mp2h471',
+    redirect_uri: 'https://carbonintense.world/auth-callback',
+    silent_redirect_uri: 'https://carbonintense.world/silent-refresh.html',
+    response_type: "code",
+    scope:"openid profile aws.cognito.signin.user.admin ads_api/ads_api taxonomy_api/taxonomy_api chat/chat media_api/media_api profiles_api/profiles_api", /*'ads_api media_api chat IdentityServerApi taxonomy_api api_gateway",*/
+    filterProtocolClaims: true,
+    loadUserInfo: true,
+    automaticSilentRenew: true,
+    stateStore: undefined,
+    userStore: undefined,
+    metadata: {
+      issuer: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_ObsPF5JdM",
+      authorization_endpoint: "https://sso.druidcloud.io/oauth2/authorize",
+      userinfo_endpoint: "https://sso.druidcloud.io/oauth2/userInfo",
+      end_session_endpoint: "https://sso.druidcloud.io/logout",
+      token_endpoint: "https://sso.druidcloud.io/oauth2/token",
+      jwks_uri: "https://sso.druidcloud.io/us-east-1_z8PhK3D8V"
     },
     signingKeys: signingKeys.keys
   }

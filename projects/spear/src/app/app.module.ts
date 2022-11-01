@@ -1,5 +1,5 @@
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler, APP_INITIALIZER,  SecurityContext, NgZone, PLATFORM_ID } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER,  SecurityContext, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientJsonpModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,7 +34,7 @@ import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule, MinimalRouterStateSerializer } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { EntityDataModule, DefaultDataServiceConfig } from '@ngrx/data';
+import { EntityDataModule, DefaultDataServiceConfig, EntityDefinitionService, EntityDataService } from '@ngrx/data';
 import { reducers, metaReducers } from './reducers';
 import { AuthCallbackComponent } from '@rollthecloudinc/auth';
 import { TransformModule } from '@rollthecloudinc/transform';
@@ -59,6 +59,10 @@ import { DparamModule } from '@rollthecloudinc/dparam';
 import { DetourModule } from '@rollthecloudinc/detour';
 import { RegionalLineChartComponent } from './components/regional-line-chart/regional-line-chart';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { entityMetadataFactory } from './entity-metadata';
+import { CrudAdaptorPluginManager, CrudDataHelperService, CrudDataService } from '@rollthecloudinc/crud';
+import { RegionalLineChartRegion } from './models/regional-line-chart';
+import { gridCarbonIntensitiesByRegionCrudAdaptorPluginFactory } from './app.factories';
 
 // import { FlexLayoutServerModule } from '@angular/flex-layout/server';
 // import { MonacoEditorModule } from 'ngx-monaco-editor';
@@ -187,5 +191,19 @@ export function markedOptionsFactory(): MarkedOptions {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    @Inject(PANELS_SETTINGS) panelsSettings: PanelsSettings,
+    eds: EntityDefinitionService,
+    entityDataService: EntityDataService,
+    crud: CrudAdaptorPluginManager,
+    entityDefinitionService: EntityDefinitionService,
+    crudDataHelper: CrudDataHelperService
+  ) {
+    const entityMetadata = entityMetadataFactory(panelsSettings);
+    eds.registerMetadataMap(entityMetadata);
+    entityDataService.registerService('RegionalLineChartRegion', new CrudDataService<RegionalLineChartRegion>('RegionalLineChartRegion', crud, entityDefinitionService, crudDataHelper));
+    crud.register(gridCarbonIntensitiesByRegionCrudAdaptorPluginFactory(crud));
+  }
+}
 
