@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { EntityCollectionService, EntityServices } from "@ngrx/data";
-import { Observable, tap } from "rxjs";
+import { filter, map, Observable, tap } from "rxjs";
 import { RegionalLineChartRegion } from "../../models/regional-line-chart";
 @Component({
   selector: "rtc-ci-regional-grid-chart",
@@ -33,19 +34,26 @@ export class RegionalLineChartComponent implements OnInit {
   regions$: Observable<Array<RegionalLineChartRegion>>;
 
   constructor(
+    private route: ActivatedRoute,
     es: EntityServices
   ) {
     this.regionsService = es.getEntityCollectionService('RegionalLineChartRegion');
   }
 
   ngOnInit() {
-    const startDate = { value: /*'2022-10-30'*/ `2022-10-31T00:00:00.000Z` };
-    const endDate = { value: /*'2022-10-30'*/ `2022-11-01T00:00:00.000Z` };
-    // NOTE: open search adaptor expects json value
-    const qs = `start_date=${JSON.stringify(startDate)}&end_date=${JSON.stringify(endDate)}`;
-    this.regions$ = this.regionsService.getWithQuery(qs).pipe(
-      tap(regions => console.log('region entities', regions))
-    );
+    this.route.paramMap.pipe(
+      map(p => p.get('date')),
+      filter(dt => dt !== undefined),
+      tap(value => {
+        const startDate = { value: /*'2022-10-30'*/ `${value}T00:00:00.000Z` };
+        const endDate = { value: /*'2022-10-30'*/ `${value}T23:59:59.000Z` };
+        // NOTE: open search adaptor expects json value
+        const qs = `start_date=${JSON.stringify(startDate)}&end_date=${JSON.stringify(endDate)}`;
+        this.regions$ = this.regionsService.getWithQuery(qs).pipe(
+          tap(regions => console.log('region entities', regions))
+        );
+      })
+    ).subscribe();
   }
 
   onSelect(data): void {
