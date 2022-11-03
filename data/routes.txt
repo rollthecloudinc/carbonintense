@@ -1,2 +1,2 @@
 /pages/create-panel-page
-/daily
+/report/2022-11-01
